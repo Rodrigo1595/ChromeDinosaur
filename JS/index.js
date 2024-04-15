@@ -22,11 +22,31 @@ var tiempoObstaculoMax = 1.8;
 var obstaculoPosY = 16;
 var obstaculos = [];
 
+var tiempoHastaNube = 0.5;
+var tiempoNubeMin = 0.7;
+var tiempoNubeMax= 2.7;
+var maxNubeY = 270;
+var minNubeY = 100;
+var nubes = [];
+var velNube = 0.5;
+
 var contenedor;
 var dino;
 var textoScore;
 var suelo;
 var gameOver;
+
+
+function reload() {
+  var element = document.getElementById("botonReloadId")
+  element.addEventListener("click",reloadPage)
+}
+
+function reloadPage() {
+ location.reload()
+}
+
+document.addEventListener("DOMContentLoaded", reload, false);
 
 // Aquí va la seccion de revisar si el estado de JS es en carga o se tiene que avanzar en el tiempo con init
 if (
@@ -63,11 +83,12 @@ function Start() {
 function Update() {
   if(parado) return;
 
-  
-  moverSuelo();
   moverDinosaurio();
+  moverSuelo();
   decidirCrearObstaculos();
+  decidirCrearNubes();
   moverObstaculos();
+  moverNubes();
   detectarColision();
 
   velY -= gravedad * deltaTime;
@@ -122,6 +143,13 @@ function decidirCrearObstaculos() {
   }
 }
 
+function decidirCrearNubes(){
+  tiempoHastaNube -= deltaTime;
+  if(tiempoHastaNube <= 0){
+    crearNube();
+  }
+}
+
 function moverObstaculos() {
   for (let index = obstaculos.length - 1; index >= 0; index--) {
     if (obstaculos[index].posX < -obstaculos[index].clientWidth) {
@@ -134,6 +162,19 @@ function moverObstaculos() {
     }
   }
 }
+
+function moverNubes() {
+  for (let index = nubes.length - 1; index >= 0; index--) {
+    if (nubes[index].posX < -nubes[index].clientWidth) {
+      nubes[index].parentNode.removeChild(nubes[index]);
+      nubes.splice(index, 1);
+    } else {
+      nubes[index].posX -= calcularDesplazamiento() * velNube;
+      nubes[index].style.left = nubes[index].posX + "px";
+    }
+  }
+}
+
 
 function ganarPuntos() {
   score++;
@@ -180,6 +221,18 @@ function crearObstaculo() {
     (Math.random() * (tiempoObstaculoMax - tiempoObstaculoMin)) / gameVel;
 }
 
+function crearNube(){
+  var nube = document.createElement("div")
+  contenedor.appendChild(nube);
+  nube.classList.add("nube");
+  nube.posX = contenedor.clientWidth
+  nube.style.left = contenedor.clientWidth + "px"
+  nube.style.bottom = minNubeY + Math.random() * (maxNubeY-minNubeY) + "px"
+
+  nubes.push(nube)
+  tiempoHastaNube = tiempoNubeMin + Math.random() * (tiempoNubeMax - tiempoNubeMin) / gameVel
+}
+
 function calcularDesplazamiento() {
   return velEscenario * deltaTime * gameVel;
 }
@@ -201,3 +254,4 @@ function GameOver() {
   estrellarse()
   gameOver.style.display = "block"
 }
+

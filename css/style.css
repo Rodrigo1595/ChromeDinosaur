@@ -64,6 +64,18 @@ body{
 
 }
 
+.nube{
+    width: 92px;
+    height: 26px;
+
+    position: absolute;
+    z-index: 0;
+
+    background: url(../assets/imgs/nube.png) no-repeat;
+    background-size: 92px 26px;
+}
+
+
 .game-over{
     display: none;
     position: absolute;
@@ -99,6 +111,17 @@ body{
     text-align: right;
 
 
+}
+.divReload{
+    margin: 10px;
+    z-index: 10; 
+}
+
+.botonReload{
+    background-color: #D48872;
+    border-radius: 3px;
+    color: antiquewhite;
+    margin: 5px;
 }
 
 @keyframes animarDino {
